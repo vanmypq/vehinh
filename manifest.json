@@ -1,10 +1,16 @@
 {
+  "id": "./",
   "name": "GeoTHCS – Phòng vẽ hình học",
   "short_name": "GeoTHCS",
+  "description": "Phòng vẽ hình học Toán THCS lớp 6–9 với GeoGebra 2D và 3D.",
+  "lang": "vi",
   "start_url": "./",
   "scope": "./",
   "display": "standalone",
+  "orientation": "any",
   "background_color": "#f3f6fb",
   "theme_color": "#17365d",
-  "icons": [{"src":"./icon.svg","sizes":"any","type":"image/svg+xml","purpose":"any maskable"}]
+  "icons": [
+    { "src": "./icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any maskable" }
+  ]
 }
