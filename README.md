@@ -1,19 +1,21 @@
-# GeoTHCS – Bản bảng vẽ rộng cho GitHub Pages
+# GeoTHCS – Bản sửa lỗi hình lập phương và mở rộng thư viện hình học
 
 ## Cập nhật lên GitHub Pages
-1. Tải gói `GeoTHCS_BangVeRong_GitHubPages.zip` và giải nén.
-2. Mở kho GitHub của bạn, chọn **Add file → Upload files**.
-3. Tải lên các tệp bên trong thư mục `GeoTHCS_GitHubPages` vào **thư mục gốc** của kho, ghi đè các tệp trùng tên.
-4. Chọn **Commit changes**, chờ GitHub Pages triển khai xong rồi mở lại trang bằng `Ctrl + F5`.
+1. Tải ZIP và giải nén.
+2. Mở kho GitHub `vanmypq/vehinh`, chọn **Add file → Upload files**.
+3. Tải lên toàn bộ các tệp bên trong thư mục `GeoTHCS_GitHubPages` vào thư mục gốc của kho; ghi đè tệp trùng tên.
+4. Chọn **Commit changes**, chờ GitHub Pages triển khai xong.
+5. Mở trang và nhấn `Ctrl + F5`. Nếu đã cài PWA, đóng rồi mở lại ứng dụng; service worker được nâng lên phiên bản v3.
 
-## Thay đổi trong phiên bản này
-- Có thanh chuyển **2D / 3D ngay trên bàn vẽ**, vẫn hiện khi bật toàn màn hình.
-- Có danh sách **Dựng hình nhanh**: điểm, đoạn thẳng, đường thẳng, tia, tam giác bất kỳ, tam giác cân, tam giác đều, tam giác vuông, hình vuông, hình chữ nhật, đường tròn; ở 3D có hình lập phương, lăng trụ, hình chóp, hình trụ, hình nón và hình cầu.
-- Nút **Dựng hình** tạo hình mẫu đã chọn; có thể tiếp tục chỉnh sửa bằng các công cụ GeoGebra tích hợp.
-- Khi đổi chế độ, danh sách hình nhanh tự chuyển theo 2D hoặc 3D.
-- Không gian vẽ rộng hơn, ưu tiên chiều cao màn hình và tận dụng gần hết chiều ngang.
-- Thêm nút **Thu gọn thư viện / Mở thư viện** để ẩn bảng công cụ khi giảng dạy hoặc trình chiếu.
-- Chế độ **Toàn màn hình** mở rộng bàn dựng hình ra toàn bộ màn hình.
-- Tự điều chỉnh bố cục trên máy tính bảng và điện thoại.
+## Sửa lỗi chính
+- Sửa lệnh hình lập phương sang `Cube(A,B)` trong không gian 3D; GeoGebra tạo khối lập phương dựa trên hai đỉnh của một cạnh.
+- Sửa mẫu lăng trụ và hình chóp theo dạng lệnh nhận đa giác đáy và điểm/vec-tơ dựng khối.
+- Khi dựng hình, ứng dụng báo cụ thể các lệnh không được GeoGebra chấp nhận thay vì chỉ báo thành công chung chung.
 
-GeoTHCS sử dụng GeoGebra trực tuyến, vì vậy cần kết nối Internet để tải bộ dựng hình.
+## Thư viện 2D mở rộng
+Điểm, đoạn thẳng, đường thẳng, tia, trung điểm, đường trung trực, đường song song/vuông góc; tam giác thường/cân/đều/vuông, trọng tâm, đường cao, đường tròn ngoại tiếp; hình vuông, chữ nhật, bình hành, thoi, thang, diều, ngũ giác và lục giác; đường tròn qua ba điểm, nửa đường tròn, tiếp tuyến, góc, phân giác và giao điểm.
+
+## Thư viện 3D mở rộng
+Hình lập phương, hộp chữ nhật, lăng trụ tam giác/ngũ giác, chóp tứ giác/tam giác, tứ diện, trụ, nón, cầu và mặt phẳng. Một số lệnh 3D có thể khác biệt tùy phiên bản GeoGebra; nếu lệnh cụ thể không được hỗ trợ, thông báo sẽ nêu lệnh lỗi để dễ kiểm tra.
+
+GeoTHCS dùng GeoGebra trực tuyến và cần Internet để tải bộ dựng hình. Các hình mẫu là điểm khởi đầu; có thể tiếp tục kéo điểm, xoay, đo đạc và chỉnh sửa bằng thanh công cụ GeoGebra.

@@ -73,8 +73,8 @@ button,input,select,textarea{font:inherit}button{cursor:pointer}
               <option value="point">Điểm</option><option value="segment">Đoạn thẳng</option><option value="line">Đường thẳng</option>
               <option value="ray">Tia</option><option value="triangle">Tam giác bất kỳ</option><option value="isosceles">Tam giác cân</option>
               <option value="equilateral">Tam giác đều</option><option value="righttriangle">Tam giác vuông</option>
-              <option value="square">Hình vuông</option><option value="rectangle">Hình chữ nhật</option><option value="circle">Đường tròn</option>
-              <option value="cube" hidden>Hình lập phương</option><option value="prism" hidden>Lăng trụ tam giác</option><option value="pyramid" hidden>Hình chóp tứ giác</option>
+              <option value="square">Hình vuông</option><option value="rectangle">Hình chữ nhật</option><option value="circle">Đường tròn</option><option value="pentagon">Ngũ giác đều</option><option value="hexagon">Lục giác đều</option>
+              <option value="cube" hidden>Hình lập phương</option><option value="box" hidden>Hình hộp chữ nhật</option><option value="prism" hidden>Lăng trụ tam giác</option><option value="pyramid" hidden>Hình chóp tứ giác</option><option value="tetrahedron" hidden>Tứ diện</option>
               <option value="cylinder" hidden>Hình trụ</option><option value="cone" hidden>Hình nón</option><option value="sphere" hidden>Hình cầu</option>
             </select>
             <button class="btn primary" id="createQuickTool" type="button">＋ Dựng hình</button>
@@ -99,45 +99,66 @@ button,input,select,textarea{font:inherit}button{cursor:pointer}
   let api = null, currentMode = "2d", loaded = false, gridVisible = true, labelsVisible = true;
   const $ = id => document.getElementById(id);
   const commands = {
-    "Điểm và đoạn thẳng": [
-      ["Hai điểm và đoạn thẳng","A=(0,0)\nB=(4,1)\nSegment(A,B)"],
-      ["Đường thẳng qua hai điểm","A=(-3,-1)\nB=(3,2)\nLine(A,B)"],
-      ["Trung điểm đoạn thẳng","A=(-3,0)\nB=(3,0)\nSegment(A,B)\nM=Midpoint(A,B)"],
-      ["Hai đường vuông góc","A=(-3,0)\nB=(3,0)\nC=(0,-2)\nLine(A,B)\nPerpendicularLine(C,Line(A,B))"]
+    "Điểm và đường": [
+      ["Điểm và nhãn","A=(0,0)"],
+      ["Đoạn thẳng AB","A=(-3,0)\nB=(3,1)\nSegment(A,B)"],
+      ["Đường thẳng AB","A=(-3,-1)\nB=(3,2)\nLine(A,B)"],
+      ["Tia AB","A=(-3,0)\nB=(3,1)\nRay(A,B)"],
+      ["Trung điểm","A=(-3,0)\nB=(3,0)\nSegment(A,B)\nM=Midpoint(A,B)"],
+      ["Hai đường vuông góc","A=(-3,0)\nB=(3,0)\nC=(0,-2)\nr=Line(A,B)\nPerpendicularLine(C,r)"],
+      ["Hai đường song song","A=(-3,0)\nB=(3,0)\nC=(-3,2)\nD=(3,2)\nLine(A,B)\nLine(C,D)"],
+      ["Đường trung trực","A=(-2,0)\nB=(2,0)\nSegment(A,B)\nPerpendicularBisector(A,B)"]
     ],
     "Tam giác": [
       ["Tam giác bất kỳ","A=(0,0)\nB=(5,0)\nC=(2,3)\nPolygon(A,B,C)"],
       ["Tam giác cân","A=(-3,0)\nB=(3,0)\nC=(0,4)\nPolygon(A,B,C)"],
       ["Tam giác đều","A=(0,0)\nB=(4,0)\nC=Rotate(B,60°,A)\nPolygon(A,B,C)"],
-      ["Tam giác vuông","A=(0,0)\nB=(4,0)\nC=(0,3)\nPolygon(A,B,C)"]
+      ["Tam giác vuông","A=(0,0)\nB=(4,0)\nC=(0,3)\nPolygon(A,B,C)"],
+      ["Trọng tâm tam giác","A=(0,0)\nB=(5,0)\nC=(2,4)\nPolygon(A,B,C)\nG=Centroid(A,B,C)"],
+      ["Đường cao tam giác","A=(0,0)\nB=(5,0)\nC=(2,4)\nPolygon(A,B,C)\nAltitude(C,A,B)"],
+      ["Đường tròn ngoại tiếp","A=(0,0)\nB=(5,0)\nC=(2,4)\nPolygon(A,B,C)\nCircle(A,B,C)"]
     ],
     "Tứ giác": [
-      ["Hình vuông","A=(0,0)\nB=(4,0)\nC=(4,4)\nD=(0,4)\nPolygon(A,B,C,D)"],
-      ["Hình chữ nhật","A=(0,0)\nB=(6,0)\nC=(6,3)\nD=(0,3)\nPolygon(A,B,C,D)"],
+      ["Hình vuông","A=(-2,-2)\nB=(2,-2)\nC=(2,2)\nD=(-2,2)\nPolygon(A,B,C,D)"],
+      ["Hình chữ nhật","A=(-3,-1.5)\nB=(3,-1.5)\nC=(3,1.5)\nD=(-3,1.5)\nPolygon(A,B,C,D)"],
       ["Hình bình hành","A=(0,0)\nB=(5,0)\nD=(2,3)\nC=B+D-A\nPolygon(A,B,C,D)"],
-      ["Hình thoi","A=(0,0)\nB=(3,0)\nC=(5,2.5)\nD=(2,2.5)\nPolygon(A,B,C,D)"],
-      ["Hình thang","A=(0,0)\nB=(6,0)\nC=(4,3)\nD=(2,3)\nPolygon(A,B,C,D)"]
+      ["Hình thoi","A=(-3,0)\nB=(0,2)\nC=(3,0)\nD=(0,-2)\nPolygon(A,B,C,D)"],
+      ["Hình thang","A=(-3,0)\nB=(3,0)\nC=(2,2)\nD=(-1,2)\nPolygon(A,B,C,D)"],
+      ["Hình diều","A=(0,3)\nB=(2,0)\nC=(0,-2)\nD=(-2,0)\nPolygon(A,B,C,D)"],
+      ["Ngũ giác đều","A=(0,2)\nB=(1.902,0.618)\nC=(1.176,-1.618)\nD=(-1.176,-1.618)\nE=(-1.902,0.618)\nPolygon(A,B,C,D,E)"],
+      ["Lục giác đều","A=(0,2)\nB=(1.732,1)\nC=(1.732,-1)\nD=(0,-2)\nE=(-1.732,-1)\nF=(-1.732,1)\nPolygon(A,B,C,D,E,F)"]
     ],
-    "Đường tròn": [
+    "Đường tròn và cung": [
       ["Đường tròn tâm O","O=(0,0)\nA=(3,0)\nCircle(O,A)"],
       ["Đường tròn qua ba điểm","A=(-2,0)\nB=(2,0)\nC=(0,3)\nCircle(A,B,C)"],
-      ["Tiếp tuyến đường tròn","O=(0,0)\nA=(2,0)\nc=Circle(O,A)\nB=(2,0)\nTangent(B,c)"]
+      ["Nửa đường tròn","A=(-3,0)\nB=(3,0)\nSemicircle(A,B)"],
+      ["Tiếp tuyến đường tròn","O=(0,0)\nA=(2,0)\nc=Circle(O,A)\nTangent(A,c)"],
+      ["Hai đường tròn đồng tâm","O=(0,0)\nA=(2,0)\nB=(3,0)\nCircle(O,A)\nCircle(O,B)"],
+      ["Đa giác nội tiếp đường tròn","O=(0,0)\nA=(2,0)\nc=Circle(O,A)\nB=(0,2)\nC=(-2,0)\nD=(0,-2)\nPolygon(A,B,C,D)"]
     ],
-    "Góc và quan hệ": [
+    "Góc và phép dựng": [
       ["Góc ABC","A=(0,0)\nB=(3,0)\nC=(4,2)\nAngle(A,B,C)"],
-      ["Hai đường song song","A=(-3,0)\nB=(3,0)\nC=(-3,2)\nD=(3,2)\nLine(A,B)\nLine(C,D)"],
-      ["Đường trung trực","A=(-2,0)\nB=(2,0)\nSegment(A,B)\nPerpendicularBisector(A,B)"]
+      ["Phân giác góc","A=(-2,0)\nB=(0,0)\nC=(1,2)\nAngleBisector(A,B,C)"],
+      ["Giao điểm hai đường","A=(-3,-1)\nB=(3,2)\nC=(-3,2)\nD=(3,-1)\nr=Line(A,B)\ns=Line(C,D)\nIntersect(r,s)"],
+      ["Đường vuông góc","A=(-3,0)\nB=(3,0)\nC=(0,2)\nr=Line(A,B)\nPerpendicularLine(C,r)"],
+      ["Đường song song","A=(-3,0)\nB=(3,0)\nC=(0,2)\nr=Line(A,B)\nParallelLine(C,r)"]
     ],
     "Hình khối 3D": [
-      ["Hình lập phương","A=(0,0,0)\nB=(3,0,0)\nC=(3,3,0)\nD=(0,3,0)\nE=(0,0,3)\nCube(A,B,C,D,E)"],
-      ["Hình chóp tứ giác","A=(-2,-2,0)\nB=(2,-2,0)\nC=(2,2,0)\nD=(-2,2,0)\nS=(0,0,4)\nPyramid(A,B,C,D,S)"],
+      ["Hình lập phương (đã sửa)","A=(0,0,0)\nB=(3,0,0)\nCube(A,B)"],
+      ["Hình hộp chữ nhật","A=(0,0,0)\nB=(4,0,0)\nC=(4,2,0)\nD=(0,2,0)\nE=(0,0,3)\nPrism(Polygon(A,B,C,D),E)"],
+      ["Lăng trụ tam giác","A=(0,0,0)\nB=(3,0,0)\nC=(1,2,0)\nD=(0,0,3)\nPrism(Polygon(A,B,C),D)"],
+      ["Lăng trụ ngũ giác","A=(0,2,0)\nB=(1.9,0.6,0)\nC=(1.2,-1.6,0)\nD=(-1.2,-1.6,0)\nE=(-1.9,0.6,0)\nF=(0,2,3)\nPrism(Polygon(A,B,C,D,E),F)"],
+      ["Hình chóp tứ giác","A=(-2,-2,0)\nB=(2,-2,0)\nC=(2,2,0)\nD=(-2,2,0)\nS=(0,0,4)\nPyramid(Polygon(A,B,C,D),S)"],
+      ["Hình chóp tam giác","A=(0,0,0)\nB=(3,0,0)\nC=(1,2,0)\nS=(1,1,3)\nPyramid(Polygon(A,B,C),S)"],
+      ["Tứ diện","A=(0,0,0)\nB=(3,0,0)\nC=(1,2,0)\nD=(1,1,3)\nPyramid(Polygon(A,B,C),D)"],
       ["Hình trụ","Cylinder((0,0,0),(0,0,4),2)"],
       ["Hình nón","Cone((0,0,0),(0,0,4),2)"],
       ["Hình cầu","Sphere((0,0,0),2)"],
-      ["Lăng trụ tam giác","A=(0,0,0)\nB=(3,0,0)\nC=(1,2,0)\nD=(0,0,3)\nPrism(A,B,C,D)"]
+      ["Mặt phẳng qua ba điểm","A=(0,0,0)\nB=(3,0,0)\nC=(0,3,0)\nPlane(A,B,C)"],
+      ["Mặt phẳng cắt khối trụ","c=Cylinder((0,0,0),(0,0,4),2)\nA=(-3,0,2)\nB=(3,0,2)\nC=(0,3,2)\nPlane(A,B,C)"]
     ]
   };
-  const twoDCategories = ["Điểm và đoạn thẳng","Tam giác","Tứ giác","Đường tròn","Góc và quan hệ"];
+  const twoDCategories = ["Điểm và đường","Tam giác","Tứ giác","Đường tròn và cung","Góc và phép dựng"];
   const threeDCategories = ["Hình khối 3D"];
   function showNotice(message, error=false) {
     const n=$("notice"); n.textContent=message; n.className="notice show"+(error?" error":"");
@@ -166,8 +187,9 @@ button,input,select,textarea{font:inherit}button{cursor:pointer}
       if(clearFirst) api.newConstruction();
       const results=cmd.split(/\n/).map(s=>s.trim()).filter(Boolean).map(line=>({line,ok:api.evalCommand(line)}));
       const failed=results.filter(x=>x.ok===false);
-      if(failed.length) showNotice("Một số lệnh chưa được GeoGebra chấp nhận: "+failed.map(x=>x.line).join(" · ")+". Kiểm tra cú pháp hoặc thử lại.",true);
-      else showNotice("Đã gửi "+results.length+" lệnh dựng hình đến GeoGebra.");
+      if(failed.length) showNotice("Có lệnh chưa được GeoGebra chấp nhận: "+failed.map(x=>x.line).join(" · ")+". Các lệnh còn lại vẫn được thực hiện; hãy thử mẫu đã kiểm tra hoặc chỉnh cú pháp.",true);
+      else showNotice("Đã dựng hình từ "+results.length+" lệnh. Bạn có thể kéo các điểm để khám phá hình.");
+      try{api.setPerspective("G");}catch(e){}
       api.showAllObjects();
     }catch(e){showNotice("Không thể dựng hình: "+e.message,true);}
   }
@@ -176,16 +198,20 @@ button,input,select,textarea{font:inherit}button{cursor:pointer}
     segment: "A=(-3,0)\nB=(3,1)\nSegment(A,B)",
     line: "A=(-3,-1)\nB=(3,2)\nLine(A,B)",
     ray: "A=(-3,0)\nB=(3,1)\nRay(A,B)",
-    triangle: "A=(-3,0)\nB=(3,0)\nC=(1,3)\nPolygon(A,B,C)",
+    triangle: "A=(0,0)\nB=(5,0)\nC=(2,3)\nPolygon(A,B,C)",
     isosceles: "A=(-3,0)\nB=(3,0)\nC=(0,4)\nPolygon(A,B,C)",
-    equilateral: "A=(-2,0)\nB=(2,0)\nC=Rotate(B,60°,A)\nPolygon(A,B,C)",
+    equilateral: "A=(0,0)\nB=(4,0)\nC=Rotate(B,60°,A)\nPolygon(A,B,C)",
     righttriangle: "A=(0,0)\nB=(4,0)\nC=(0,3)\nPolygon(A,B,C)",
     square: "A=(-2,-2)\nB=(2,-2)\nC=(2,2)\nD=(-2,2)\nPolygon(A,B,C,D)",
     rectangle: "A=(-3,-1.5)\nB=(3,-1.5)\nC=(3,1.5)\nD=(-3,1.5)\nPolygon(A,B,C,D)",
     circle: "O=(0,0)\nA=(3,0)\nCircle(O,A)",
-    cube: "A=(0,0,0)\nB=(3,0,0)\nC=(3,3,0)\nD=(0,3,0)\nE=(0,0,3)\nCube(A,B,C,D,E)",
-    prism: "A=(0,0,0)\nB=(3,0,0)\nC=(1,2,0)\nD=(0,0,3)\nPrism(A,B,C,D)",
-    pyramid: "A=(-2,-2,0)\nB=(2,-2,0)\nC=(2,2,0)\nD=(-2,2,0)\nS=(0,0,4)\nPyramid(A,B,C,D,S)",
+    pentagon: "A=(0,2)\nB=(1.902,0.618)\nC=(1.176,-1.618)\nD=(-1.176,-1.618)\nE=(-1.902,0.618)\nPolygon(A,B,C,D,E)",
+    hexagon: "A=(0,2)\nB=(1.732,1)\nC=(1.732,-1)\nD=(0,-2)\nE=(-1.732,-1)\nF=(-1.732,1)\nPolygon(A,B,C,D,E,F)",
+    cube: "A=(0,0,0)\nB=(3,0,0)\nCube(A,B)",
+    box: "A=(0,0,0)\nB=(4,0,0)\nC=(4,2,0)\nD=(0,2,0)\nE=(0,0,3)\nPrism(Polygon(A,B,C,D),E)",
+    prism: "A=(0,0,0)\nB=(3,0,0)\nC=(1,2,0)\nD=(0,0,3)\nPrism(Polygon(A,B,C),D)",
+    pyramid: "A=(-2,-2,0)\nB=(2,-2,0)\nC=(2,2,0)\nD=(-2,2,0)\nS=(0,0,4)\nPyramid(Polygon(A,B,C,D),S)",
+    tetrahedron: "A=(0,0,0)\nB=(3,0,0)\nC=(1,2,0)\nD=(1,1,3)\nPyramid(Polygon(A,B,C),D)",
     cylinder: "Cylinder((0,0,0),(0,0,4),2)",
     cone: "Cone((0,0,0),(0,0,4),2)",
     sphere: "Sphere((0,0,0),2)"
@@ -194,8 +220,8 @@ button,input,select,textarea{font:inherit}button{cursor:pointer}
     const select=$("quickToolSelect");
     const is3d=mode==="3d";
     Array.from(select.options).forEach(opt=>{
-      const isShape3d=["cube","prism","pyramid","cylinder","cone","sphere"].includes(opt.value);
-      const is2dOnly=["point","segment","line","ray","triangle","isosceles","equilateral","righttriangle","square","rectangle","circle"].includes(opt.value);
+      const isShape3d=["cube","box","prism","pyramid","tetrahedron","cylinder","cone","sphere"].includes(opt.value);
+      const is2dOnly=["point","segment","line","ray","triangle","isosceles","equilateral","righttriangle","square","rectangle","circle","pentagon","hexagon"].includes(opt.value);
       opt.hidden=is3d?!isShape3d:!is2dOnly;
     });
     const first=Array.from(select.options).find(opt=>!opt.hidden);
@@ -284,7 +310,7 @@ button,input,select,textarea{font:inherit}button{cursor:pointer}
   $("grade").addEventListener("change",()=>{
     const grade=$("grade").value;
     if(grade==="9") $("category").value=currentMode==="2d"?"Đường tròn":"Hình khối 3D";
-    else if(grade==="6") $("category").value=currentMode==="2d"?"Điểm và đoạn thẳng":"Hình khối 3D";
+    else if(grade==="6") $("category").value=currentMode==="2d"?"Điểm và đường":"Hình khối 3D";
     else if(grade==="7") $("category").value=currentMode==="2d"?"Tam giác":"Hình khối 3D";
     else $("category").value=currentMode==="2d"?"Tứ giác":"Hình khối 3D";
     renderQuick();
