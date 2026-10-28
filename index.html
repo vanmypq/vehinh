@@ -189,8 +189,10 @@ button,input,select,textarea{font:inherit}button{cursor:pointer}
       const failed=results.filter(x=>x.ok===false);
       if(failed.length) showNotice("Có lệnh chưa được GeoGebra chấp nhận: "+failed.map(x=>x.line).join(" · ")+". Các lệnh còn lại vẫn được thực hiện; hãy thử mẫu đã kiểm tra hoặc chỉnh cú pháp.",true);
       else showNotice("Đã dựng hình từ "+results.length+" lệnh. Bạn có thể kéo các điểm để khám phá hình.");
-      try{api.setPerspective("G");}catch(e){}
-      api.showAllObjects();
+      // Do not force the generic 2D perspective after a 3D construction.
+      // Doing so can switch the active view away from the 3D graphics view.
+      if(currentMode === "2d") { try{ api.setPerspective("G"); }catch(e){} }
+      try { api.showAllObjects(); } catch(e) {}
     }catch(e){showNotice("Không thể dựng hình: "+e.message,true);}
   }
   const quickToolCommands = {
@@ -251,10 +253,12 @@ button,input,select,textarea{font:inherit}button{cursor:pointer}
       enableLabelDrags:true,enableShiftDragZoom:true,enableRightClick:true,
       showToolBarHelp:true,showFullscreenButton:true,language:"vi",borderColor:null,
       appletOnLoad:function(ggbApi){
+        // Ignore a late callback from an applet that was replaced during mode switching.
+        if(mode !== currentMode) return;
         api=ggbApi;loaded=true;$("loading").classList.add("hidden");
-        setReady(true,"GeoGebra đã sẵn sàng");
-        try{api.setGridVisible(mode==="2d"?1:3,gridVisible);}catch(e){}
-        showNotice("Bộ dựng hình đã sẵn sàng. Chọn hình mẫu hoặc sử dụng công cụ GeoGebra.");
+        setReady(true,mode === "3d" ? "GeoGebra 3D đã sẵn sàng" : "GeoGebra 2D đã sẵn sàng");
+        try { if(mode === "2d") api.setGridVisible(1,gridVisible); } catch(e) {}
+        showNotice(mode === "3d" ? "Không gian 3D đã sẵn sàng. Chọn hình khối rồi nhấn Dựng hình; kéo nền để xoay mô hình." : "Bộ dựng hình đã sẵn sàng. Chọn hình mẫu hoặc sử dụng công cụ GeoGebra.");
       }
     };
     try{const applet=new GGBApplet(params,true);applet.inject("ggb-element");}
