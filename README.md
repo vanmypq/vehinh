@@ -1,17 +1,16 @@
-# GeoTHCS – Bản dành cho GitHub Pages
+# GeoTHCS – Web app có thể cài đặt (PWA)
 
-## Vì sao trang cũ chỉ hiện tiêu đề?
-GitHub Pages cần tệp `index.html` ở thư mục xuất bản. Bản cũ để mã trong thư mục con `GeoTHCS/` bên trong ZIP, vì vậy khi chỉ tải ZIP và README lên kho, trang gốc không tìm thấy trang ứng dụng.
+Bản này giữ giao diện GeoTHCS và bổ sung khả năng cài đặt như ứng dụng trên thiết bị tương thích.
 
-## Cách cập nhật
-1. Tải và giải nén gói `GeoTHCS_GitHubPages.zip` trên máy tính.
-2. Mở kho https://github.com/vanmypq/vehinh và chọn **Add file → Upload files**.
-3. Tải lên **các tệp bên trong thư mục đã giải nén** (`index.html`, `.nojekyll`, `README.md` nếu có), không tải riêng tệp ZIP. `index.html` phải nằm ngay thư mục gốc của kho, cạnh README.
-4. Chọn **Commit changes**.
-5. Mở **Settings → Pages**. Chọn **Deploy from a branch**, nhánh `main`, thư mục `/(root)`, rồi Save. Nếu đã cài đúng thì không cần đổi lại.
-6. Chờ GitHub Pages triển khai xong rồi tải lại https://vanmypq.github.io/vehinh/ bằng `Ctrl+F5`.
+## Cập nhật lên GitHub Pages
+1. Giải nén ZIP.
+2. Mở https://github.com/vanmypq/vehinh → **Add file → Upload files**.
+3. Tải lên **toàn bộ các tệp bên trong thư mục** vào thư mục gốc của kho: `index.html`, `manifest.json`, `sw.js`, `icon.svg`, `.nojekyll`, `README.md`.
+4. Commit changes và chờ GitHub Pages hoàn tất triển khai.
+5. Mở https://vanmypq.github.io/vehinh/ bằng Chrome hoặc Edge.
+6. Chọn **Cài đặt ứng dụng** nếu nút xuất hiện; hoặc mở menu trình duyệt và chọn **Install GeoTHCS / Cài đặt ứng dụng**.
 
-## Kiểm tra
-- Ứng dụng cần Internet để tải thư viện GeoGebra.
-- Nếu thấy thông báo “Không tải được GeoGebra”, thử mở lại sau, cho phép kết nối tới `geogebra.org`, và kiểm tra mạng/trình chặn nội dung.
-- Gói này đã được kiểm tra cú pháp JavaScript bằng Node.js; chưa thể xác nhận kết nối GeoGebra trong trình duyệt của người dùng từ môi trường đóng gói.
+## Lưu ý
+- Không đổi `index.html` thành `.app`: web app được phân phối qua URL, còn PWA được cài từ trình duyệt.
+- GeoTHCS cần Internet để tải thư viện GeoGebra 2D/3D. Service worker chỉ lưu bộ khung giao diện; không cam kết vẽ hình GeoGebra khi ngoại tuyến.
+- Chưa thể cài đặt trực tiếp lên tài khoản GitHub của bạn từ đây; bạn cần tải các tệp đã cập nhật lên kho.

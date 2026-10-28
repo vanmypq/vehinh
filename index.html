@@ -4,6 +4,9 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="theme-color" content="#17365d">
+<meta name="description" content="GeoTHCS – Phòng vẽ hình học Toán THCS lớp 6–9, hỗ trợ hình học 2D và 3D.">
+<link rel="manifest" href="./manifest.json">
+<link rel="icon" href="./icon.svg" type="image/svg+xml">
 <title>GeoTHCS – Phòng vẽ hình học</title>
 <script src="https://www.geogebra.org/apps/deployggb.js"></script>
 <style>
@@ -29,6 +32,7 @@ button,input,select,textarea{font:inherit}button{cursor:pointer}
 <header class="topbar">
   <div class="brand"><div class="logo">△</div><div><h1>GeoTHCS</h1><p>Phòng vẽ hình học dành cho giáo viên THCS</p></div></div>
   <div class="top-actions">
+    <button class="btn dark" id="installBtn" hidden>＋ Cài đặt ứng dụng</button>
     <button class="btn dark" id="newBtn">＋ Bản vẽ mới</button>
     <button class="btn gold" id="saveBtn">↓ Lưu tệp GeoGebra</button>
   </div>
@@ -230,6 +234,27 @@ button,input,select,textarea{font:inherit}button{cursor:pointer}
     try{if(!document.fullscreenElement)await el.requestFullscreen();else await document.exitFullscreen();}
     catch(e){showNotice("Trình duyệt không cho phép chế độ toàn màn hình tại thời điểm này.",true);}
   });
+  // PWA: cài ứng dụng từ trình duyệt hỗ trợ; vẫn cần Internet để tải GeoGebra.
+  let installPrompt = null;
+  const installBtn = $("installBtn");
+  window.addEventListener("beforeinstallprompt", (event) => {
+    event.preventDefault(); installPrompt = event; installBtn.hidden = false;
+  });
+  installBtn.addEventListener("click", async () => {
+    if (!installPrompt) {
+      showNotice("Nếu nút cài đặt chưa xuất hiện, hãy mở menu trình duyệt và chọn Cài đặt trang / Install app.");
+      return;
+    }
+    installPrompt.prompt();
+    await installPrompt.userChoice;
+    installPrompt = null; installBtn.hidden = true;
+  });
+  window.addEventListener("appinstalled", () => {
+    installBtn.hidden = true; showNotice("GeoTHCS đã được cài đặt trên thiết bị.");
+  });
+  if ("serviceWorker" in navigator && (location.protocol === "https:" || location.hostname === "localhost")) {
+    window.addEventListener("load", () => navigator.serviceWorker.register("./sw.js").catch(() => {}));
+  }
   renderCategories();loadMode("2d");
 })();
 </script>
