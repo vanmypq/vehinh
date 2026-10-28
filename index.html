@@ -96,7 +96,7 @@ button,input,select,textarea{font:inherit}button{cursor:pointer}
 <script>
 (() => {
   "use strict";
-  let api = null, currentMode = "2d", loaded = false, gridVisible = true, labelsVisible = true;
+  let api = null, currentMode = "2d", loaded = false, gridVisible = true, labelsVisible = true, appletGeneration = 0;
   const $ = id => document.getElementById(id);
   const commands = {
     "Điểm và đường": [
@@ -182,18 +182,31 @@ button,input,select,textarea{font:inherit}button{cursor:pointer}
     });
   }
   function runCommands(cmd, clearFirst=false){
-    if(!api){showNotice("Bộ dựng hình chưa sẵn sàng. Vui lòng đợi GeoGebra tải xong.",true);return;}
+    if(!api || !loaded){showNotice("Bộ dựng hình chưa sẵn sàng. Hãy chờ trạng thái GeoGebra sẵn sàng rồi thử lại.",true);return false;}
     try{
       if(clearFirst) api.newConstruction();
-      const results=cmd.split(/\n/).map(s=>s.trim()).filter(Boolean).map(line=>({line,ok:api.evalCommand(line)}));
-      const failed=results.filter(x=>x.ok===false);
-      if(failed.length) showNotice("Có lệnh chưa được GeoGebra chấp nhận: "+failed.map(x=>x.line).join(" · ")+". Các lệnh còn lại vẫn được thực hiện; hãy thử mẫu đã kiểm tra hoặc chỉnh cú pháp.",true);
-      else showNotice("Đã dựng hình từ "+results.length+" lệnh. Bạn có thể kéo các điểm để khám phá hình.");
-      // Do not force the generic 2D perspective after a 3D construction.
-      // Doing so can switch the active view away from the 3D graphics view.
+      const lines=cmd.split(/\n/).map(s=>s.trim()).filter(Boolean);
+      const results=[];
+      for(const line of lines){
+        let ok=false, errorText="";
+        try { ok=api.evalCommand(line) !== false; } catch(e) { errorText=e.message||String(e); }
+        results.push({line,ok,errorText});
+      }
+      const failed=results.filter(x=>!x.ok);
+      // Wait for GeoGebra to update its 3D camera after all objects have been created.
+      window.setTimeout(()=>{
+        try { if(api && typeof api.showAllObjects === "function") api.showAllObjects(); } catch(e) {}
+        try { if(api && typeof api.setSize === "function") api.setSize($("ggb-wrap").clientWidth,$("ggb-wrap").clientHeight); } catch(e) {}
+      },180);
+      if(failed.length){
+        const detail=failed.map(x=>x.line+(x.errorText?" ("+x.errorText+")":"")).join(" · ");
+        showNotice("GeoGebra không chấp nhận "+failed.length+"/"+results.length+" lệnh: "+detail+". Hãy kiểm tra trạng thái 3D và kết nối GeoGebra.",true);
+        return false;
+      }
+      showNotice("Đã gửi thành công "+results.length+" lệnh dựng hình. Nếu chưa thấy hình, dùng ‘Hiện tất cả đối tượng’ trong menu GeoGebra.");
       if(currentMode === "2d") { try{ api.setPerspective("G"); }catch(e){} }
-      try { api.showAllObjects(); } catch(e) {}
-    }catch(e){showNotice("Không thể dựng hình: "+e.message,true);}
+      return true;
+    }catch(e){showNotice("Không thể dựng hình: "+(e.message||String(e)),true);return false;}
   }
   const quickToolCommands = {
     point: "A=(0,0)",
@@ -240,29 +253,62 @@ button,input,select,textarea{font:inherit}button{cursor:pointer}
   function loadMode(mode){
     if(currentMode===mode && loaded)return;
     currentMode=mode; loaded=false; api=null;
+    const generation=++appletGeneration;
     updateQuickToolOptions(mode);
     $("mode2d").classList.toggle("active",mode==="2d");$("mode3d").classList.toggle("active",mode==="3d");
     $("workspaceTitle").textContent=mode==="2d"?"Bàn dựng hình 2D":"Bàn dựng hình 3D";
     $("workspaceSubtitle").textContent=mode==="2d"?"Kéo các điểm để thay đổi hình":"Kéo để xoay mô hình · cuộn hoặc chụm để thu phóng";
     $("exportHint").textContent=mode==="2d"?"Xuất PNG và SVG từ vùng hình học.":"Xuất PNG khả dụng; SVG không được API hỗ trợ cho vùng 3D.";
-    $("loading").classList.remove("hidden");$("ggb-element").innerHTML="";setReady(false,"Đang tải bộ dựng hình…");
-    if(typeof GGBApplet==="undefined"){setReady(false,"Không tải được GeoGebra");showNotice("Không tải được thư viện GeoGebra. Kiểm tra Internet hoặc thử mở lại trang.",true);return;}
+    $("loading").classList.remove("hidden");
+    // Recreate the host element on every mode change. This prevents a stale 2D applet
+    // or delayed callback from leaving the 3D viewport blank.
+    const oldHost=$("ggb-element");
+    const host=document.createElement("div");host.id="ggb-element";host.style.width="100%";host.style.height="100%";
+    oldHost.replaceWith(host);
+    setReady(false,mode==="3d"?"Đang khởi tạo không gian 3D…":"Đang tải bộ dựng hình 2D…");
+    if(typeof GGBApplet==="undefined"){
+      $("loading").classList.add("hidden");setReady(false,"Không tải được GeoGebra");
+      showNotice("Không tải được thư viện GeoGebra. Kiểm tra kết nối Internet rồi tải lại trang.",true);return;
+    }
+    let readyTimer=window.setTimeout(()=>{
+      if(generation!==appletGeneration || loaded)return;
+      $("loading").classList.add("hidden");setReady(false,"GeoGebra tải quá lâu");
+      showNotice("GeoGebra "+(mode==="3d"?"3D":"2D")+" chưa phản hồi. Hãy kiểm tra Internet, tắt trình chặn nội dung hoặc tải lại trang.",true);
+    },30000);
     const params={
-      id:"ggbApplet",appName:mode==="2d"?"geometry":"3d",width:1000,height:700,
+      id:"ggbApplet_"+generation,appName:mode==="2d"?"geometry":"3d",width:1000,height:700,
       showToolBar:true,showMenuBar:true,showAlgebraInput:true,showResetIcon:true,
       enableLabelDrags:true,enableShiftDragZoom:true,enableRightClick:true,
       showToolBarHelp:true,showFullscreenButton:true,language:"vi",borderColor:null,
       appletOnLoad:function(ggbApi){
-        // Ignore a late callback from an applet that was replaced during mode switching.
-        if(mode !== currentMode) return;
+        if(generation!==appletGeneration || mode!==currentMode)return;
+        window.clearTimeout(readyTimer);
         api=ggbApi;loaded=true;$("loading").classList.add("hidden");
-        setReady(true,mode === "3d" ? "GeoGebra 3D đã sẵn sàng" : "GeoGebra 2D đã sẵn sàng");
-        try { if(mode === "2d") api.setGridVisible(1,gridVisible); } catch(e) {}
-        showNotice(mode === "3d" ? "Không gian 3D đã sẵn sàng. Chọn hình khối rồi nhấn Dựng hình; kéo nền để xoay mô hình." : "Bộ dựng hình đã sẵn sàng. Chọn hình mẫu hoặc sử dụng công cụ GeoGebra.");
+        setReady(true,mode==="3d"?"GeoGebra 3D đã sẵn sàng":"GeoGebra 2D đã sẵn sàng");
+        try { if(mode==="2d") api.setGridVisible(1,gridVisible); } catch(e) {}
+        if(mode==="3d"){
+          // Runtime smoke test: draw a visible cube immediately so the 3D view is
+          // verified in the user's browser before they choose another solid.
+          try {
+            api.newConstruction();
+            const a=api.evalCommand("A=(0,0,0)");
+            const b=api.evalCommand("B=(3,0,0)");
+            const cube=api.evalCommand("Cube(A,B)");
+            if(a===false || b===false || cube===false){
+              showNotice("Không tạo được khối kiểm tra 3D. GeoGebra đã tải nhưng từ chối lệnh Cube(A,B); hãy chụp ảnh lỗi để chẩn đoán.",true);
+            } else {
+              window.setTimeout(()=>{try{if(generation===appletGeneration&&api&&api.showAllObjects)api.showAllObjects();}catch(e){}},250);
+              showNotice("Không gian 3D đã tải và dựng thử hình lập phương thành công. Chọn mẫu khác để thay thế khối thử.");
+            }
+          } catch(e){showNotice("Không gian 3D đã mở nhưng kiểm tra dựng hình thất bại: "+(e.message||String(e)),true);}
+        } else {
+          showNotice("GeoGebra 2D đã sẵn sàng. Chọn hình mẫu hoặc sử dụng công cụ GeoGebra.");
+        }
+        window.setTimeout(()=>{try{if(generation===appletGeneration&&api&&api.setSize)api.setSize($("ggb-wrap").clientWidth,$("ggb-wrap").clientHeight);}catch(e){}},220);
       }
     };
     try{const applet=new GGBApplet(params,true);applet.inject("ggb-element");}
-    catch(e){setReady(false,"Lỗi khởi tạo");showNotice("Không thể khởi tạo GeoGebra: "+e.message,true);}
+    catch(e){window.clearTimeout(readyTimer);$("loading").classList.add("hidden");setReady(false,"Lỗi khởi tạo");showNotice("Không thể khởi tạo GeoGebra: "+(e.message||String(e)),true);}
   }
   function downloadDataUrl(dataUrl, filename){
     const a=document.createElement("a");a.href=dataUrl;a.download=filename;document.body.appendChild(a);a.click();a.remove();
