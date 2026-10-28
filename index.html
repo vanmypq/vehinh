@@ -114,7 +114,7 @@ button,input,select,textarea{font:inherit}button{cursor:pointer}
       ["Tam giác cân – giữ hai cạnh bên bằng nhau","A=(-3,0)\nB=(3,0)\nM=Midpoint(A,B)\nC=Rotate(B,90°,M)\nPolygon(A,B,C)"],
       ["Tam giác đều – giữ 3 cạnh bằng nhau","A=(0,0)\nB=(4,0)\nRegularPolygon(A,B,3)"],
       ["Tam giác vuông – giữ góc vuông","A=(0,0)\nB=(4,0)\nC=Rotate(A,90°,B)\nPolygon(A,B,C)"],
-      ["Trọng tâm tam giác","A=(0,0)\nB=(5,0)\nC=(2,4)\nPolygon(A,B,C)\nG=Centroid(A,B,C)"],
+      ["Trọng tâm tam giác","A=(0,0)\nB=(5,0)\nC=(2,4)\nPolygon(A,B,C)\nM=Midpoint(B,C)\nN=Midpoint(A,C)\nG=Intersect(Line(A,M),Line(B,N))"],
       ["Đường cao tam giác","A=(0,0)\nB=(5,0)\nC=(2,4)\nPolygon(A,B,C)\nAltitude(C,A,B)"],
       ["Đường tròn ngoại tiếp","A=(0,0)\nB=(5,0)\nC=(2,4)\nPolygon(A,B,C)\nCircle(A,B,C)"]
     ],
@@ -126,7 +126,7 @@ button,input,select,textarea{font:inherit}button{cursor:pointer}
       ["Hình thang – giữ một cặp cạnh đáy song song","A=(-3,0)\nB=(3,0)\nC=(2,2)\nr=Line(A,B)\ns=ParallelLine(C,r)\nD=Point(s)\nPolygon(A,B,C,D)"],
       ["Hình diều – giữ trục đối xứng","A=(0,3)\nC=(0,-2)\nB=(2,0)\nr=Line(A,C)\nD=Reflect(B,r)\nPolygon(A,B,C,D)"],
       ["Ngũ giác đều – giữ các cạnh và góc bằng nhau","A=(0,2)\nB=(1.902,0.618)\nRegularPolygon(A,B,5)"],
-      ["Lục giác đều","A=(0,2)\nB=(1.732,1)\nC=(1.732,-1)\nD=(0,-2)\nE=(-1.732,-1)\nF=(-1.732,1)\nPolygon(A,B,C,D,E,F)"]
+      ["Lục giác đều","A=(0,2)\nB=(1.732,1)\nRegularPolygon(A,B,6)"]
     ],
     "Đường tròn và cung": [
       ["Đường tròn tâm O","O=(0,0)\nA=(3,0)\nCircle(O,A)"],
@@ -188,19 +188,26 @@ button,input,select,textarea{font:inherit}button{cursor:pointer}
       const lines=cmd.split(/\n/).map(s=>s.trim()).filter(Boolean);
       const results=[];
       for(const line of lines){
-        let ok=false, errorText="";
-        try { ok=api.evalCommand(line) !== false; } catch(e) { errorText=e.message||String(e); }
-        results.push({line,ok,errorText});
+        let result=false, errorText="";
+        try {
+          result=api.evalCommand(line);
+          // The GeoGebra API returns true for an accepted command and false for a rejected one.
+          // Treat undefined/null as unknown rather than silently claiming success.
+          if(result !== true){
+            errorText=(typeof api.getLastError === "function" ? api.getLastError() : "") || "GeoGebra không xác nhận lệnh";
+          }
+        } catch(e) { errorText=e.message||String(e); }
+        results.push({line,ok:result===true,errorText});
+        if(result !== true) break;
       }
       const failed=results.filter(x=>!x.ok);
-      // Wait for GeoGebra to update its 3D camera after all objects have been created.
       window.setTimeout(()=>{
         try { if(api && typeof api.showAllObjects === "function") api.showAllObjects(); } catch(e) {}
         try { if(api && typeof api.setSize === "function") api.setSize($("ggb-wrap").clientWidth,$("ggb-wrap").clientHeight); } catch(e) {}
       },180);
       if(failed.length){
-        const detail=failed.map(x=>x.line+(x.errorText?" ("+x.errorText+")":"")).join(" · ");
-        showNotice("GeoGebra không chấp nhận "+failed.length+"/"+results.length+" lệnh: "+detail+". Hãy kiểm tra trạng thái 3D và kết nối GeoGebra.",true);
+        const bad=failed[0];
+        showNotice("Không dựng được hình vì lệnh này bị GeoGebra từ chối: “"+bad.line+"”. "+bad.errorText+". Hãy kiểm tra tên lệnh/cú pháp hoặc chọn mẫu hình khác.",true);
         return false;
       }
       showNotice("Đã gửi thành công "+results.length+" lệnh. Với mẫu hình có ràng buộc (tam giác đều, tam giác vuông, hình vuông, đa giác đều, khối lập phương…), hãy kéo các điểm tự do để kiểm tra tính chất được bảo toàn. Các điểm phụ thuộc sẽ tự cập nhật theo phép dựng.");
@@ -214,7 +221,7 @@ button,input,select,textarea{font:inherit}button{cursor:pointer}
     line: "A=(-3,-1)\nB=(3,2)\nLine(A,B)",
     ray: "A=(-3,0)\nB=(3,1)\nRay(A,B)",
     triangle: "A=(0,0)\nB=(5,0)\nC=(2,3)\nPolygon(A,B,C)",
-    isosceles: "A=(-3,0)\nB=(3,0)\nC=(0,4)\nPolygon(A,B,C)",
+    isosceles: "A=(-3,0)\nB=(3,0)\nM=Midpoint(A,B)\nC=(x(M),y(M)+4)\nPolygon(A,B,C)",
     equilateral: "A=(0,0)\nB=(4,0)\nRegularPolygon(A,B,3)",
     righttriangle: "A=(0,0)\nB=(4,0)\nC=Rotate(A,90°,B)\nPolygon(A,B,C)",
     square: "A=(-2,0)\nB=(2,0)\nRegularPolygon(A,B,4)",
@@ -359,7 +366,7 @@ button,input,select,textarea{font:inherit}button{cursor:pointer}
   $("category").addEventListener("change",renderQuick);
   $("grade").addEventListener("change",()=>{
     const grade=$("grade").value;
-    if(grade==="9") $("category").value=currentMode==="2d"?"Đường tròn":"Hình khối 3D";
+    if(grade==="9") $("category").value=currentMode==="2d"?"Đường tròn và cung":"Hình khối 3D";
     else if(grade==="6") $("category").value=currentMode==="2d"?"Điểm và đường":"Hình khối 3D";
     else if(grade==="7") $("category").value=currentMode==="2d"?"Tam giác":"Hình khối 3D";
     else $("category").value=currentMode==="2d"?"Tứ giác":"Hình khối 3D";
