@@ -1,16 +1,15 @@
-# GeoTHCS – Web app có thể cài đặt (PWA)
-
-Bản này giữ giao diện GeoTHCS và bổ sung khả năng cài đặt như ứng dụng trên thiết bị tương thích.
+# GeoTHCS – Bản bảng vẽ rộng cho GitHub Pages
 
 ## Cập nhật lên GitHub Pages
-1. Giải nén ZIP.
-2. Mở https://github.com/vanmypq/vehinh → **Add file → Upload files**.
-3. Tải lên **toàn bộ các tệp bên trong thư mục** vào thư mục gốc của kho: `index.html`, `manifest.json`, `sw.js`, `icon.svg`, `.nojekyll`, `README.md`.
-4. Commit changes và chờ GitHub Pages hoàn tất triển khai.
-5. Mở https://vanmypq.github.io/vehinh/ bằng Chrome hoặc Edge.
-6. Chọn **Cài đặt ứng dụng** nếu nút xuất hiện; hoặc mở menu trình duyệt và chọn **Install GeoTHCS / Cài đặt ứng dụng**.
+1. Tải gói `GeoTHCS_BangVeRong_GitHubPages.zip` và giải nén.
+2. Mở kho GitHub của bạn, chọn **Add file → Upload files**.
+3. Tải lên các tệp bên trong thư mục `GeoTHCS_GitHubPages` vào **thư mục gốc** của kho, ghi đè các tệp trùng tên.
+4. Chọn **Commit changes**, chờ GitHub Pages triển khai xong rồi mở lại trang bằng `Ctrl + F5`.
 
-## Lưu ý
-- Không đổi `index.html` thành `.app`: web app được phân phối qua URL, còn PWA được cài từ trình duyệt.
-- GeoTHCS cần Internet để tải thư viện GeoGebra 2D/3D. Service worker chỉ lưu bộ khung giao diện; không cam kết vẽ hình GeoGebra khi ngoại tuyến.
-- Chưa thể cài đặt trực tiếp lên tài khoản GitHub của bạn từ đây; bạn cần tải các tệp đã cập nhật lên kho.
+## Thay đổi trong phiên bản này
+- Không gian vẽ rộng hơn, ưu tiên chiều cao màn hình và tận dụng gần hết chiều ngang.
+- Thêm nút **Thu gọn thư viện / Mở thư viện** để ẩn bảng công cụ khi giảng dạy hoặc trình chiếu.
+- Chế độ **Toàn màn hình** mở rộng bàn dựng hình ra toàn bộ màn hình.
+- Tự điều chỉnh bố cục trên máy tính bảng và điện thoại.
+
+GeoTHCS sử dụng GeoGebra trực tuyến, vì vậy cần kết nối Internet để tải bộ dựng hình.
