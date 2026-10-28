@@ -1,21 +1,21 @@
-# GeoTHCS – bản chẩn đoán và sửa dựng hình 3D
+# GeoTHCS – Bản dựng hình bảo toàn tính chất khi kéo điểm
 
-## Cải tiến trong bản này
-- Khởi tạo lại vùng chứa GeoGebra mỗi lần chuyển chế độ 2D/3D để tránh applet cũ ghi đè vùng vẽ mới.
-- Mỗi lần khởi tạo có mã phiên riêng; callback tải trễ của phiên cũ bị bỏ qua.
-- Có thông báo nếu GeoGebra 3D không tải trong 30 giây.
-- Khi không gian 3D sẵn sàng, ứng dụng tự dựng một hình lập phương kiểm tra bằng `Cube(A,B)`. Điều này giúp xác nhận ngay trong trình duyệt người dùng rằng bộ dựng 3D hoạt động; chọn mẫu khác sẽ thay thế hình kiểm tra.
-- Khi dựng mẫu, ứng dụng báo rõ các lệnh bị GeoGebra từ chối và tự yêu cầu khung nhìn hiển thị toàn bộ đối tượng.
-- Đã tăng phiên bản cache Service Worker để tránh trình duyệt giữ bản cũ.
+## Cải tiến cốt lõi
+- Các mẫu tam giác đều, tam giác vuông, hình vuông, ngũ giác đều và lục giác đều được tạo bằng lệnh dựng phụ thuộc (`RegularPolygon`, `Rotate`, `Midpoint`) thay vì đặt toàn bộ đỉnh độc lập.
+- Khi người dùng kéo các điểm tự do, các điểm phụ thuộc sẽ được GeoGebra tính lại, giúp giữ tính chất hình học được xác định bởi phép dựng.
+- Bổ sung lời nhắc trong giao diện về sự khác nhau giữa điểm tự do và điểm phụ thuộc.
+- Hình lập phương và các khối được tạo bằng lệnh hình học 3D của GeoGebra; không chỉ vẽ các cạnh như hình tĩnh.
 
 ## Cập nhật GitHub Pages
-1. Giải nén gói ZIP.
-2. Tải tất cả tệp trong thư mục `GeoTHCS_GitHubPages` lên thư mục gốc của kho `vanmypq/vehinh`, ghi đè tệp trùng tên.
-3. Commit changes, chờ GitHub Pages hoàn tất.
-4. Mở `https://vanmypq.github.io/vehinh/` và nhấn `Ctrl+F5`. Nếu đã cài PWA, đóng hẳn ứng dụng rồi mở lại.
-5. Chuyển sang 3D. Bản mới tự dựng khối lập phương kiểm tra. Sau đó chọn một mẫu khác để thử.
+1. Giải nén ZIP.
+2. Tải tất cả tệp trong thư mục `GeoTHCS_GitHubPages` lên thư mục gốc kho `vanmypq/vehinh`, ghi đè tệp trùng tên.
+3. Commit changes và chờ GitHub Pages triển khai.
+4. Mở `https://vanmypq.github.io/vehinh/`, nhấn `Ctrl+F5`. Nếu cài PWA, đóng hẳn ứng dụng rồi mở lại.
+5. Thử dựng tam giác đều/hình vuông/đa giác đều, sau đó kéo đỉnh để quan sát tính chất được bảo toàn.
 
-## Kiểm tra đã thực hiện
-- Kiểm tra cú pháp JavaScript bằng Node.js: đạt.
-- Kiểm tra cấu trúc tệp và đóng gói ZIP: thực hiện khi tạo gói.
-- Môi trường tạo gói không có kết nối mạng đáng tin cậy tới máy chủ GeoGebra nên không thể giả nhận đã kiểm thử tương tác trực tiếp với máy chủ GeoGebra. Bản này có kiểm tra chạy thực tế ngay trong trình duyệt của người dùng và thông báo lỗi cụ thể nếu lệnh 3D bị từ chối.
+## Kiểm thử
+- Đã kiểm tra cú pháp JavaScript bằng Node.js.
+- Các mẫu được đổi sang cách dựng phụ thuộc để GeoGebra duy trì quan hệ hình học. Chưa thể kiểm thử tương tác trực tiếp trên máy chủ GeoGebra trong môi trường đóng gói này; nên xác minh sau khi triển khai.
+
+## Lưu ý sư phạm
+Không thể bảo đảm mọi hình giữ tính chất nếu dựng bằng các điểm độc lập hoặc lệnh nhập tùy ý. Với hình mẫu chuẩn, hãy dùng các lệnh dựng phụ thuộc. Khi người dùng nhập lệnh riêng, tính chất phụ thuộc vào cách họ xây dựng đối tượng trong GeoGebra.
