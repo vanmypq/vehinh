@@ -20,12 +20,12 @@ button,input,select,textarea{font:inherit}button{cursor:pointer}
 .status{display:flex;align-items:center;gap:7px;font-size:12px;color:var(--muted);background:#fff;border:1px solid var(--line);padding:9px 12px;border-radius:999px}.dot{width:8px;height:8px;border-radius:50%;background:#e3a33b}.dot.ready{background:#22a06b}
 .layout{display:grid;grid-template-columns:260px minmax(0,1fr);gap:12px;align-items:stretch}.layout.library-hidden{grid-template-columns:minmax(0,1fr)}.layout.library-hidden>aside{display:none}.panel,.workpanel{background:var(--white);border:1px solid var(--line);border-radius:12px;box-shadow:0 5px 18px #1a34500a;overflow:hidden}.workpanel{min-width:0}.panel-head{padding:15px 16px 12px;border-bottom:1px solid var(--line)}.panel-head h3{font-size:15px;margin:0}.panel-head p{font-size:12px;color:var(--muted);margin:5px 0 0;line-height:1.4}.panel-body{padding:14px;display:grid;gap:15px}.field{display:grid;gap:7px}.field label,.label{font-size:12px;font-weight:750;color:#394b62}.field select,.field input,.field textarea{width:100%;border:1px solid #d7e0eb;border-radius:9px;background:#fff;padding:10px 11px;outline:none;color:var(--ink)}.field select:focus,.field input:focus,.field textarea:focus{border-color:#6a9bf5;box-shadow:0 0 0 3px #2463eb16}.field textarea{resize:vertical;min-height:82px;font-family:ui-monospace,SFMono-Regular,Consolas,monospace;font-size:12px;line-height:1.5}.help{font-size:11px;color:var(--muted);line-height:1.45}.tabs{display:grid;grid-template-columns:1fr 1fr;background:#edf2f8;padding:4px;border-radius:11px;gap:4px}.tabs button{border:0;background:transparent;padding:9px 6px;border-radius:8px;color:#5a6b81;font-size:12px;font-weight:750}.tabs button.active{background:white;color:#1e5fc4;box-shadow:0 1px 5px #17365d18}
 .quick-grid{display:grid;grid-template-columns:1fr 1fr;gap:7px}.quick{border:1px solid #e1e8f1;background:#fbfcfe;border-radius:10px;padding:10px 9px;text-align:left;min-height:58px}.quick:hover{border-color:#92b5f8;background:#f5f8ff}.quick strong{display:block;font-size:12px;color:#243b59}.quick span{display:block;font-size:10px;color:#7b8ba0;margin-top:4px}
-.work-head{padding:12px 14px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap}.work-title{display:flex;align-items:center;gap:9px}.work-title h3{font-size:14px;margin:0}.work-title span{font-size:11px;color:var(--muted)}.toolbar{display:flex;gap:6px;flex-wrap:wrap}.toolbar .btn{padding:8px 10px;font-size:12px}
+.work-head{padding:10px 12px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;background:#fbfdff}.work-modebar{display:flex;align-items:center;gap:6px;flex-wrap:wrap}.mode-switch{display:flex;gap:3px;padding:3px;border-radius:10px;background:#eaf0f8}.mode-switch .btn{border:0;background:transparent;padding:8px 11px}.mode-switch .btn.active{background:#1e5fc4;color:#fff;box-shadow:0 2px 5px #17365d24}.quick-picker{display:flex;align-items:center;gap:6px}.quick-picker select{max-width:230px;min-width:170px;border:1px solid #d7e0eb;border-radius:9px;background:#fff;padding:8px 10px;color:var(--ink);font-size:12px;font-weight:650}.workpanel:fullscreen .work-head{padding:8px 12px}.workpanel:fullscreen .work-title{display:none}.workpanel:fullscreen .work-modebar{flex:1}.workpanel:fullscreen .toolbar{margin-left:auto}.workpanel:fullscreen .quick-picker select{max-width:260px}.work-title{display:flex;align-items:center;gap:9px}.work-title h3{font-size:14px;margin:0}.work-title span{font-size:11px;color:var(--muted)}.toolbar{display:flex;gap:6px;flex-wrap:wrap}.toolbar .btn{padding:8px 10px;font-size:12px}
 #ggb-wrap{height:calc(100vh - 245px);min-height:560px;max-height:none;background:white;position:relative}#ggb-element{width:100%;height:100%}.layout.library-hidden #ggb-wrap{height:calc(100vh - 180px);min-height:620px}.workpanel:fullscreen{width:100vw;height:100vh;border:0;border-radius:0;background:#fff;display:flex;flex-direction:column}.workpanel:fullscreen .work-head{flex:0 0 auto}.workpanel:fullscreen #ggb-wrap{height:calc(100vh - 95px);min-height:0;flex:1}.workpanel:fullscreen .work-foot{display:none}#ggb-element{width:100%;height:100%}#loading{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:10px;background:linear-gradient(135deg,#f9fbff,#eef4fc);z-index:2;text-align:center;padding:20px;color:#536780}#loading.hidden{display:none}.spinner{width:28px;height:28px;border:3px solid #d6e3f4;border-top-color:#2463eb;border-radius:50%;animation:spin .8s linear infinite}@keyframes spin{to{transform:rotate(360deg)}}
 .work-foot{padding:10px 14px;background:#fafcff;border-top:1px solid var(--line);display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;color:var(--muted);font-size:11px}.notice{padding:10px 12px;border-radius:9px;background:#eef6ff;border:1px solid #d9eaff;color:#28558b;font-size:12px;line-height:1.45;display:none}.notice.show{display:block}.notice.error{background:#fff4ed;border-color:#ffddc8;color:#934516}
 .footer{margin-top:14px;display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;color:#78879a;font-size:11px;line-height:1.5}.footer a{color:#2b63b7}
 @media(max-width:900px){.layout{grid-template-columns:1fr}.layout.library-hidden{grid-template-columns:1fr}.panel-body{grid-template-columns:1fr 1fr;align-items:start}.panel-body .full{grid-column:1/-1}#ggb-wrap,.layout.library-hidden #ggb-wrap{height:68vh;min-height:480px}}
-@media(max-width:560px){.topbar{padding:10px}.brand h1{font-size:18px}.top-actions{width:100%}.top-actions .btn{flex:1}.page{padding:9px 6px 16px}.panel-body{grid-template-columns:1fr}.panel-body .full{grid-column:auto}.intro{align-items:flex-start}.intro p{font-size:12px}.status{font-size:11px}#ggb-wrap,.layout.library-hidden #ggb-wrap{height:68vh;min-height:430px}.toolbar{width:100%}.toolbar .btn{flex:1}.work-head{align-items:flex-start;padding:9px}.work-foot{font-size:10px}.layout{gap:8px}}
+@media(max-width:560px){.work-modebar{width:100%}.quick-picker{flex:1;min-width:0}.quick-picker select{min-width:0;width:100%;max-width:none}.workpanel:fullscreen .work-head{gap:6px}.workpanel:fullscreen .toolbar{width:auto;margin-left:0}.workpanel:fullscreen .toolbar .btn{flex:0 1 auto;padding:7px 8px}.topbar{padding:10px}.brand h1{font-size:18px}.top-actions{width:100%}.top-actions .btn{flex:1}.page{padding:9px 6px 16px}.panel-body{grid-template-columns:1fr}.panel-body .full{grid-column:auto}.intro{align-items:flex-start}.intro p{font-size:12px}.status{font-size:11px}#ggb-wrap,.layout.library-hidden #ggb-wrap{height:68vh;min-height:430px}.toolbar{width:100%}.toolbar .btn{flex:1}.work-head{align-items:flex-start;padding:9px}.work-foot{font-size:10px}.layout{gap:8px}}
 </style>
 </head>
 <body>
@@ -63,8 +63,25 @@ button,input,select,textarea{font:inherit}button{cursor:pointer}
     <section class="workpanel">
       <div class="work-head">
         <div class="work-title"><div><h3 id="workspaceTitle">Bàn dựng hình 2D</h3><span id="workspaceSubtitle">Kéo các điểm để thay đổi hình</span></div></div>
+        <div class="work-modebar">
+          <div class="mode-switch" aria-label="Chọn không gian dựng hình">
+            <button class="btn active" id="workMode2d" type="button">2D · Hình phẳng</button>
+            <button class="btn" id="workMode3d" type="button">3D · Hình khối</button>
+          </div>
+          <div class="quick-picker">
+            <select id="quickToolSelect" aria-label="Chọn hình cần dựng">
+              <option value="point">Điểm</option><option value="segment">Đoạn thẳng</option><option value="line">Đường thẳng</option>
+              <option value="ray">Tia</option><option value="triangle">Tam giác bất kỳ</option><option value="isosceles">Tam giác cân</option>
+              <option value="equilateral">Tam giác đều</option><option value="righttriangle">Tam giác vuông</option>
+              <option value="square">Hình vuông</option><option value="rectangle">Hình chữ nhật</option><option value="circle">Đường tròn</option>
+              <option value="cube" hidden>Hình lập phương</option><option value="prism" hidden>Lăng trụ tam giác</option><option value="pyramid" hidden>Hình chóp tứ giác</option>
+              <option value="cylinder" hidden>Hình trụ</option><option value="cone" hidden>Hình nón</option><option value="sphere" hidden>Hình cầu</option>
+            </select>
+            <button class="btn primary" id="createQuickTool" type="button">＋ Dựng hình</button>
+          </div>
+        </div>
         <div class="toolbar">
-          <button class="btn" id="toggleLibraryBtn" aria-expanded="true">◂ Thu gọn thư viện</button>
+          <button class="btn" id="toggleLibraryBtn" aria-expanded="true">◂ Thư viện</button>
           <button class="btn" id="pngBtn">Xuất PNG</button>
           <button class="btn" id="svgBtn">Xuất SVG</button>
           <button class="btn" id="fullscreenBtn">⛶ Toàn màn hình</button>
@@ -154,9 +171,48 @@ button,input,select,textarea{font:inherit}button{cursor:pointer}
       api.showAllObjects();
     }catch(e){showNotice("Không thể dựng hình: "+e.message,true);}
   }
+  const quickToolCommands = {
+    point: "A=(0,0)",
+    segment: "A=(-3,0)\nB=(3,1)\nSegment(A,B)",
+    line: "A=(-3,-1)\nB=(3,2)\nLine(A,B)",
+    ray: "A=(-3,0)\nB=(3,1)\nRay(A,B)",
+    triangle: "A=(-3,0)\nB=(3,0)\nC=(1,3)\nPolygon(A,B,C)",
+    isosceles: "A=(-3,0)\nB=(3,0)\nC=(0,4)\nPolygon(A,B,C)",
+    equilateral: "A=(-2,0)\nB=(2,0)\nC=Rotate(B,60°,A)\nPolygon(A,B,C)",
+    righttriangle: "A=(0,0)\nB=(4,0)\nC=(0,3)\nPolygon(A,B,C)",
+    square: "A=(-2,-2)\nB=(2,-2)\nC=(2,2)\nD=(-2,2)\nPolygon(A,B,C,D)",
+    rectangle: "A=(-3,-1.5)\nB=(3,-1.5)\nC=(3,1.5)\nD=(-3,1.5)\nPolygon(A,B,C,D)",
+    circle: "O=(0,0)\nA=(3,0)\nCircle(O,A)",
+    cube: "A=(0,0,0)\nB=(3,0,0)\nC=(3,3,0)\nD=(0,3,0)\nE=(0,0,3)\nCube(A,B,C,D,E)",
+    prism: "A=(0,0,0)\nB=(3,0,0)\nC=(1,2,0)\nD=(0,0,3)\nPrism(A,B,C,D)",
+    pyramid: "A=(-2,-2,0)\nB=(2,-2,0)\nC=(2,2,0)\nD=(-2,2,0)\nS=(0,0,4)\nPyramid(A,B,C,D,S)",
+    cylinder: "Cylinder((0,0,0),(0,0,4),2)",
+    cone: "Cone((0,0,0),(0,0,4),2)",
+    sphere: "Sphere((0,0,0),2)"
+  };
+  function updateQuickToolOptions(mode){
+    const select=$("quickToolSelect");
+    const is3d=mode==="3d";
+    Array.from(select.options).forEach(opt=>{
+      const isShape3d=["cube","prism","pyramid","cylinder","cone","sphere"].includes(opt.value);
+      const is2dOnly=["point","segment","line","ray","triangle","isosceles","equilateral","righttriangle","square","rectangle","circle"].includes(opt.value);
+      opt.hidden=is3d?!isShape3d:!is2dOnly;
+    });
+    const first=Array.from(select.options).find(opt=>!opt.hidden);
+    if(first) select.value=first.value;
+    $("workMode2d").classList.toggle("active",!is3d);
+    $("workMode3d").classList.toggle("active",is3d);
+  }
+  function createQuickTool(){
+    const key=$("quickToolSelect").value;
+    const cmd=quickToolCommands[key];
+    if(!cmd){showNotice("Vui lòng chọn một hình trong danh sách.",true);return;}
+    runCommands(cmd,true);
+  }
   function loadMode(mode){
     if(currentMode===mode && loaded)return;
     currentMode=mode; loaded=false; api=null;
+    updateQuickToolOptions(mode);
     $("mode2d").classList.toggle("active",mode==="2d");$("mode3d").classList.toggle("active",mode==="3d");
     $("workspaceTitle").textContent=mode==="2d"?"Bàn dựng hình 2D":"Bàn dựng hình 3D";
     $("workspaceSubtitle").textContent=mode==="2d"?"Kéo các điểm để thay đổi hình":"Kéo để xoay mô hình · cuộn hoặc chụm để thu phóng";
@@ -221,6 +277,9 @@ button,input,select,textarea{font:inherit}button{cursor:pointer}
   });
   $("mode2d").addEventListener("click",()=>loadMode("2d"));
   $("mode3d").addEventListener("click",()=>loadMode("3d"));
+  $("workMode2d").addEventListener("click",()=>loadMode("2d"));
+  $("workMode3d").addEventListener("click",()=>loadMode("3d"));
+  $("createQuickTool").addEventListener("click",createQuickTool);
   $("category").addEventListener("change",renderQuick);
   $("grade").addEventListener("change",()=>{
     const grade=$("grade").value;
@@ -240,9 +299,14 @@ button,input,select,textarea{font:inherit}button{cursor:pointer}
   $("gridBtn").addEventListener("click",()=>{gridVisible=!gridVisible;if(api){try{api.setGridVisible(currentMode==="2d"?1:3,gridVisible);}catch(e){api.setGridVisible(gridVisible);}}showNotice("Đã "+(gridVisible?"bật":"tắt")+" lưới tọa độ.");});
   $("labelsBtn").addEventListener("click",()=>{labelsVisible=!labelsVisible;if(api){try{api.setLabelVisible("A",labelsVisible);}catch(e){} showNotice("Đã đổi trạng thái nhãn cho đối tượng A nếu đối tượng này tồn tại. Có thể chỉnh nhãn từng đối tượng trong GeoGebra.");}});
   $("fullscreenBtn").addEventListener("click",async()=>{
-    const el=$("workpanel")||document.querySelector(".workpanel");
+    const el=document.querySelector(".workpanel");
     try{if(!document.fullscreenElement)await el.requestFullscreen();else await document.exitFullscreen();}
     catch(e){showNotice("Trình duyệt không cho phép chế độ toàn màn hình tại thời điểm này.",true);}
+  });
+  document.addEventListener("fullscreenchange",()=>{
+    const active=!!document.fullscreenElement;
+    $("fullscreenBtn").textContent=active?"⤢ Thoát toàn màn hình":"⛶ Toàn màn hình";
+    window.setTimeout(()=>{try{if(api&&api.setSize)api.setSize($("ggb-wrap").clientWidth,$("ggb-wrap").clientHeight);}catch(e){}},250);
   });
   // PWA: cài ứng dụng từ trình duyệt hỗ trợ; vẫn cần Internet để tải GeoGebra.
   let installPrompt = null;
